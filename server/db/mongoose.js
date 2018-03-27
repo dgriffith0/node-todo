@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const ObjectId = require('mongodb').ObjectID;
+const {ObjectID} = require('mongodb');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/TodoApp');
+mongoose.connect(process.env.MONGODB_URI);
 
-module.exports = {mongoose, ObjectId};
+module.exports = {mongoose, ObjectID};
 
 
 

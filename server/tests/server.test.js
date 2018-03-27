@@ -3,7 +3,7 @@ const request = require('supertest');
 
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
-const {ObjectID} = requre('mongodb');
+const {ObjectID} = require('mongodb');
 
 const todos = [{
     _id: new ObjectID(),
@@ -47,47 +47,61 @@ describe('POST /todos', ()=> {
         var text = '';
 
         request(app)
-        .post('/todos')
-        .send({ text })
-        .expect(400)
-        .end((err, res) => {
-            if (err) {
-                return done(err);
-            }
-            Todo.find().then((todos) => {
-                expect(todos.length).toBe(2);
-                done();
-            }).catch((err) => done(err));
-        });
+            .post('/todos')
+            .send({ text })
+            .expect(400)
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+                Todo.find().then((todos) => {
+                    expect(todos.length).toBe(2);
+                    done();
+                }).catch((err) => done(err));
+            });
     });
 });
 
 describe('GET /todos', () => {
     it('should get all todos', (done) => {
         request(app)
-        .get('/todos')
-        .expect(200)
-        .expect((res) => {
-            expect(res.body.todos.length).toBe(2);
-        })
-        .end(done);
+            .get('/todos')
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todos.length).toBe(2);
+            })
+            .end(done);
     });
 });
 
-//should return 400 not found (async)
 
 describe('GET /todos/:id', () => {
     it('should get a requested todo', (done) => {
         request(app)
-        .get(`/todos/${todos[0]._id.toHexString()}`)
-        .expect(200)
-        .expect((res) => {
-            expect(res.body.todos[0].text === 'first test todo')
-        })
-        .end(done);
-    })
+            .get(`/todos/${todos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo[0].text).toBe(todos[0].text);
+            })
+            .end(done);
+    });
 
-    //it should return a 404 if todo not found (async)
+    it('it should return 400 for invalid object ids', (done) => {
+        request(app)
+        .get('/todos/123')
+        .expect(400)
+        .end(done);
+    });
+
+    it('should return a 404 if todo not found', (done) => {
+        request(app)
+            .get('/todos/5aba68d5cd70a40fd057c91z')
+            .expect(404)
+            .expect((res) => {
+                console.log(res.body);
+            })
+            .end(done);
+    });
 
     //it should return 404 for non object ids (async)
 })
