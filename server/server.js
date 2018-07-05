@@ -1,5 +1,5 @@
 require('./config/config');
-var {mongoose, ObjectID} = require('./db/mongoose');
+var {ObjectID} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
